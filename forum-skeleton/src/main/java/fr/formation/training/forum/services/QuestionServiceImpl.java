@@ -1,7 +1,9 @@
 package fr.formation.training.forum.services;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
+import fr.formation.training.forum.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import fr.formation.training.forum.dtos.*;
@@ -33,10 +35,15 @@ public class QuestionServiceImpl extends AbstractService
 
     @Override
     public void update(Long id, QuestionUpdateDto dto) {
-	Question question = questions.findById(id).get();
-	getMapper().map(dto, question);
-	setTechnology(question, dto.getTechnologyId());
-	questions.save(question);
+		Optional<Question> optional = questions.findById(id);
+		if (optional.isEmpty()) {
+			throw new ResourceNotFoundException();
+		} else {
+			Question question = optional.get();
+			getMapper().map(dto, question);
+			setTechnology(question, dto.getTechnologyId());
+			questions.save(question);
+		}
     }
 
     @Override

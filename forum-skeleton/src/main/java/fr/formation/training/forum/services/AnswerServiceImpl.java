@@ -2,6 +2,7 @@ package fr.formation.training.forum.services;
 
 import java.time.LocalDateTime;
 
+import fr.formation.training.forum.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import fr.formation.training.forum.dtos.*;
@@ -34,7 +35,7 @@ public class AnswerServiceImpl extends AbstractService
 
     @Override
     public void update(Long id, AnswerUpdateDto dto) {
-	Answer answer = answers.findById(id).get();
+	Answer answer = answers.findById(id).orElseThrow(() -> new ResourceNotFoundException("Answer not found"));
 	getMapper().map(dto, answer);
 	answers.save(answer);
     }
